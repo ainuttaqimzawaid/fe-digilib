@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authService } from '../services/auth/authService';
+import { authService } from '../../services/auth/authService';
 
 const useAuthStore = create((set) => ({
     user: null,

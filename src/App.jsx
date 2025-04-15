@@ -1,23 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css'
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Categories from './components/Category';
-import PopularBooks from './components/PopularBook';
-import CTA from './components/CTA';
+import Home from './pages/Home';
 import Footer from './components/Footer';
+import Login from './pages/Login';
 
 function App() {
   return (
     <div>
-      <Navbar />
-      <Hero />
-      <Categories />
-      <PopularBooks />
-      <CTA />
-      <Footer />
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/detail/:id" element={<Detail />} /> */}
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     </div>
   );
 }

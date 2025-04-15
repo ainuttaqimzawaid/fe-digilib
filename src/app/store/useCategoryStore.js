@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import categoryService from '../services/categories/categoryService';
+import categoryService from '../api/services/category';
 
 const useCategoryStore = create((set) => ({
     categories: [],

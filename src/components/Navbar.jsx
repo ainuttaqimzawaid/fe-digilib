@@ -1,10 +1,12 @@
-import { FaRegUser } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +38,10 @@ const Navbar = () => {
     };
   }, [lastScrollY]);
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
@@ -65,9 +71,56 @@ const Navbar = () => {
               : "bg-white/20 text-white placeholder-white/70 border-white/30"
               }`}
           />
-          <div className={`transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
+          <div className={`flex items-center gap-2 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
             }`}>
-            <FaRegUser className="w-5 h-5 cursor-pointer hover:text-blue-600" />
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  {user?.name || 'User'}
+                </span>
+                <div className="flex gap-2">
+                  <Link
+                    to="/profile"
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${isScrolled
+                      ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                      }`}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${isScrolled
+                      ? "bg-red-100 text-red-700 hover:bg-red-200"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                      }`}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Link
+                  to="/login"
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${isScrolled
+                    ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                    }`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${isScrolled
+                    ? "bg-green-100 text-green-700 hover:bg-green-200"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                    }`}
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
