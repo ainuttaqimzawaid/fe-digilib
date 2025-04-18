@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/useAuthStore';
+// import useAuthStore from '../app/store/useAuthStore';
 
 const Login = () => {
     const navigate = useNavigate();
-    const { login, loading, error, isAuthenticated, clearError } = useAuthStore();
+    // const { login, loading, error, isAuthenticated, clearError } = useAuthStore();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -13,15 +13,15 @@ const Login = () => {
 
     const [formErrors, setFormErrors] = useState({});
 
-    useEffect(() => {
-        // Redirect if already authenticated
-        if (isAuthenticated) {
-            navigate('/');
-        }
+    // useEffect(() => {
+    //     // Redirect if already authenticated
+    //     if (isAuthenticated) {
+    //         navigate('/');
+    //     }
 
-        // Clear any previous errors
-        clearError();
-    }, [isAuthenticated, navigate, clearError]);
+    //     // Clear any previous errors
+    //     clearError();
+    // }, [isAuthenticated, navigate, clearError]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -81,17 +81,17 @@ const Login = () => {
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Or{' '}
-                        <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link to="/" className="font-medium text-blue-600 hover:text-blue-500">
                             create a new account
                         </Link>
                     </p>
                 </div>
 
-                {error && (
+                {/* {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         <span className="block sm:inline">{error}</span>
                     </div>
-                )}
+                )} */}
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
@@ -154,7 +154,7 @@ const Login = () => {
                     </div>
 
                     <div>
-                        <button
+                        {/* <button
                             type="submit"
                             disabled={loading}
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -174,7 +174,7 @@ const Login = () => {
                                 </span>
                             )}
                             {loading ? 'Signing in...' : 'Sign in'}
-                        </button>
+                        </button> */}
                     </div>
                 </form>
             </div>
