@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import useAuthStore from "../store/useAuthStore";
+// import useAuthStore from "../store/useAuthStore";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const { isAuthenticated, user, logout } = useAuthStore();
+  // const { isAuthenticated, user, logout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,9 +38,9 @@ const Navbar = () => {
     };
   }, [lastScrollY]);
 
-  const handleLogout = () => {
-    logout();
-  };
+  // const handleLogout = () => {
+  //   logout();
+  // };
 
   return (
     <nav
@@ -71,7 +71,7 @@ const Navbar = () => {
               : "bg-white/20 text-white placeholder-white/70 border-white/30"
               }`}
           />
-          <div className={`flex items-center gap-2 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
+          {/* <div className={`flex items-center gap-2 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
             }`}>
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </nav>
