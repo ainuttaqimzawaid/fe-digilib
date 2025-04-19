@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-// import useAuthStore from "../store/useAuthStore";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../app/store/useAuthStore";
 
 const Navbar = () => {
+  const navigate = useNavigate()
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  // const { isAuthenticated, user, logout } = useAuthStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
+      console.log('navbaruseeffect' + user)
       const currentScrollY = window.scrollY;
 
       // Handle background transparency
@@ -38,9 +40,10 @@ const Navbar = () => {
     };
   }, [lastScrollY]);
 
-  // const handleLogout = () => {
-  //   logout();
-  // };
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav
@@ -57,7 +60,7 @@ const Navbar = () => {
         </h1>
         <ul className={`flex space-x-6 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
           }`}>
-          <li><a href="#" className="hover:text-blue-600 transition-colors">Home</a></li>
+          <li><Link to="/" className="hover:text-blue-600 transition-colors">Home</Link></li>
           <li><a href="#" className="hover:text-blue-600 transition-colors">Categories</a></li>
           <li><a href="#" className="hover:text-blue-600 transition-colors">New Arrivals</a></li>
           <li><a href="#" className="hover:text-blue-600 transition-colors">My Books</a></li>
@@ -71,12 +74,13 @@ const Navbar = () => {
               : "bg-white/20 text-white placeholder-white/70 border-white/30"
               }`}
           />
-          {/* <div className={`flex items-center gap-2 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
+          <div className={`flex items-center gap-2 transition-colors duration-300 ${isScrolled ? "text-gray-600" : "text-white"
             }`}>
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">
                   {user?.name || 'User'}
+                  {console.log('navbar' + user)}
                 </span>
                 <div className="flex gap-2">
                   <Link
@@ -121,7 +125,7 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
-          </div> */}
+          </div>
         </div>
       </div>
     </nav>

@@ -4,11 +4,11 @@ import api from '../axios/index';
 export const authService = {
     async login(credentials) {
         const response = await api.post('/auth/login', credentials);
-        if (response.data.token) {
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+        if (response.token) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('user', JSON.stringify(response.user));
         }
-        return response.data;
+        return response;
     },
 
     async register(userData) {

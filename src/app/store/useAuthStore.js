@@ -1,122 +1,106 @@
-import { create } from 'zustand';
+import { useState, useEffect } from 'react';
 import { authService } from '../api/services/auth';
 
-const useAuthStore = create((set) => ({
-    user: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
+export const useAuthStore = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Initialize auth state
-    initialize: async () => {
-        try {
-            set({ loading: true });
-            const user = await authService.getCurrentUser();
-            set({
-                user,
-                isAuthenticated: !!user,
-                loading: false
-            });
-        } catch (error) {
-            set({
-                error: error.message || 'Failed to initialize auth',
-                loading: false
-            });
-        }
-    },
+    useEffect(() => {
+        const initAuth = async () => {
+            try {
+                const currentUser = await authService.getCurrentUser();
+                setUser(currentUser);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        initAuth();
+        console.log('useauthstoreuseeffect' + user)
+    }, []);
 
-    // Login
-    login: async (credentials) => {
+    const login = async (credentials) => {
         try {
-            set({ loading: true, error: null });
+            setLoading(true);
             const data = await authService.login(credentials);
-            set({
-                user: data.user,
-                isAuthenticated: true,
-                loading: false
-            });
+            console.log(data.user)
+            setUser(data.user);
+            console.log('useauthstore/loginuser' + user)
+            setError(null);
             return data;
-        } catch (error) {
-            set({
-                error: error.message || 'Login failed',
-                loading: false
-            });
-            throw error;
+        } catch (err) {
+            setError(err.message || 'Login failed');
+            throw err;
+        } finally {
+            setLoading(false);
         }
-    },
+    };
 
-    // Register
-    register: async (userData) => {
+    const register = async (userData) => {
         try {
-            set({ loading: true, error: null });
+            setLoading(true);
             const data = await authService.register(userData);
-            set({ loading: false });
+            setError(null);
             return data;
-        } catch (error) {
-            set({
-                error: error.message || 'Registration failed',
-                loading: false
-            });
-            throw error;
+        } catch (err) {
+            setError(err.message || 'Registration failed');
+            throw err;
+        } finally {
+            setLoading(false);
         }
-    },
+    };
 
-    // Logout
-    logout: async () => {
+    const logout = async () => {
         try {
-            set({ loading: true, error: null });
             await authService.logout();
-            set({
-                user: null,
-                isAuthenticated: false,
-                loading: false
-            });
-        } catch (error) {
-            set({
-                error: error.message || 'Logout failed',
-                loading: false
-            });
-            throw error;
+            setUser(null);
+            setError(null);
+        } catch (err) {
+            setError(err.message || 'Logout failed');
+            throw err;
         }
-    },
+    };
 
-    // Update profile
-    updateProfile: async (userData) => {
+    const updateProfile = async (userData) => {
         try {
-            set({ loading: true, error: null });
+            setLoading(true);
             const data = await authService.updateProfile(userData);
-            set({
-                user: data.user,
-                loading: false
-            });
+            setUser(data.user);
+            setError(null);
             return data;
-        } catch (error) {
-            set({
-                error: error.message || 'Profile update failed',
-                loading: false
-            });
-            throw error;
+        } catch (err) {
+            setError(err.message || 'Profile update failed');
+            throw err;
+        } finally {
+            setLoading(false);
         }
-    },
+    };
 
-    // Change password
-    changePassword: async (passwordData) => {
+    const changePassword = async (passwordData) => {
         try {
-            set({ loading: true, error: null });
+            setLoading(true);
             const data = await authService.changePassword(passwordData);
-            set({ loading: false });
+            setError(null);
             return data;
-        } catch (error) {
-            set({
-                error: error.message || 'Password change failed',
-                loading: false
-            });
-            throw error;
+        } catch (err) {
+            setError(err.message || 'Password change failed');
+            throw err;
+        } finally {
+            setLoading(false);
         }
-    },
+    };
 
-    // Clear error
-    clearError: () => set({ error: null }),
-}));
-
-export default useAuthStore; 
+    return {
+        user,
+        loading,
+        error,
+        login,
+        register,
+        logout,
+        updateProfile,
+        changePassword,
+        isAuthenticated: authService.isAuthenticated()
+    };
+}; 
