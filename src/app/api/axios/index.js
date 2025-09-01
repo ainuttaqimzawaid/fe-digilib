@@ -3,7 +3,6 @@ import { config as appConfig } from '../../../config';
 
 const baseURL = `${appConfig.api_host}`;
 
-// Axios instance utama
 const api = axios.create({
     baseURL,
     headers: {
@@ -11,19 +10,25 @@ const api = axios.create({
     },
 });
 
-// Interceptor Request – Tambahkan Authorization Header jika ada token
+// Interceptor Request – Tambah token + atur Content-Type otomatis
 api.interceptors.request.use(
     (requestConfig) => {
         const token = localStorage.getItem('token');
         if (token) {
             requestConfig.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Atur Content-Type ke multipart jika FormData
+        if (requestConfig.data instanceof FormData) {
+            requestConfig.headers['Content-Type'] = 'multipart/form-data';
+        }
+
         return requestConfig;
     },
     (error) => Promise.reject(error)
 );
 
-// Interceptor Response – Tangani Error & Redirect jika Unauthorized
+// Interceptor Response – Tangani 401 (Unauthorized)
 api.interceptors.response.use(
     (response) => response.data,
     (error) => {

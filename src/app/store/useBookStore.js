@@ -1,25 +1,107 @@
 import { create } from 'zustand';
-import { bookService } from '../services/books/bookService';
+import { bookService } from '../api/services/book';
 
 const useBookStore = create((set) => ({
-    books: [],
-    featuredBooks: [],
+    allBooks: [],
+    favoriteBooks: [],
+    newArrival: [],
+    newRelease: [],
+    categoryBooks: [],
     currentBook: null,
     loading: false,
+    loading: {
+        allBooks: false,
+        favoriteBooks: false,
+        newArrival: false,
+        newRelease: false,
+        categoryBooks: false,
+        currentBook: false,
+    },
     error: null,
 
     // Get all books
     getAllBooks: async (params = {}) => {
         try {
-            set({ loading: true, error: null });
+            set((state) => ({
+                loading: true,
+                error: null
+            }));
+            await new Promise(resolve => setTimeout(resolve, 2000));
             const data = await bookService.getAllBooks(params);
-            set({ books: data, loading: false });
+            console.log(data);
+            set((state) => ({
+                allBooks: data,
+                loading: false,
+            }));
             return data;
+        } catch (error) {
+            set((state) => ({
+                error: error.message || 'Failed to fetch books',
+                loading: false
+            }));
+            throw error;
+        }
+    },
+
+    getFavoriteBooks: async (params = {}) => {
+        try {
+            set((state) => ({
+                loading: true,
+                error: null
+            }));
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const data = await bookService.getFavoriteBooks(params);
+            set((state) => ({
+                favoriteBooks: data,
+                loading: false,
+            }));
         } catch (error) {
             set({
                 error: error.message || 'Failed to fetch books',
                 loading: false
             });
+            throw error;
+        }
+    },
+
+    getNewArrival: async (params = {}) => {
+        try {
+            set((state) => ({
+                loading: true,
+                error: null
+            }));
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const data = await bookService.getNewArrival(params);
+            set((state) => ({
+                newArrival: data,
+                loading: false,
+            }));
+        } catch (error) {
+            set((state) => ({
+                loading: true,
+                error: error.message || 'Failed to fetch books',
+            }));
+            throw error;
+        }
+    },
+
+    getNewRelease: async (params = {}) => {
+        try {
+            set((state) => ({
+                loading: true,
+                error: null
+            }));
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const data = await bookService.getNewRelease(params);
+            set((state) => ({
+                newRelease: data,
+                loading: false,
+            }));
+        } catch (error) {
+            set((state) => ({
+                loading: true,
+                error: error.message || 'Failed to fetch books',
+            }));
             throw error;
         }
     },
@@ -66,22 +148,6 @@ const useBookStore = create((set) => ({
         } catch (error) {
             set({
                 error: error.message || 'Failed to fetch books by category',
-                loading: false
-            });
-            throw error;
-        }
-    },
-
-    // Search books
-    searchBooks: async (query, params = {}) => {
-        try {
-            set({ loading: true, error: null });
-            const data = await bookService.searchBooks(query, params);
-            set({ books: data, loading: false });
-            return data;
-        } catch (error) {
-            set({
-                error: error.message || 'Failed to search books',
                 loading: false
             });
             throw error;

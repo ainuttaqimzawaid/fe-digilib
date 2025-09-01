@@ -1,106 +1,121 @@
-import { useState, useEffect } from 'react';
+import { create } from 'zustand';
 import { authService } from '../api/services/auth';
 
-export const useAuthStore = () => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+export const useAuthStore = create((set, get) => ({
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    loading: false,
+    error: null,
 
-    useEffect(() => {
-        const initAuth = async () => {
-            try {
-                const currentUser = await authService.getCurrentUser();
-                setUser(currentUser);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        initAuth();
-        console.log('useauthstoreuseeffect' + user)
-    }, []);
-
-    const login = async (credentials) => {
+    // ✅ LOGIN
+    login: async (credentials) => {
+        set({ loading: true });
         try {
-            setLoading(true);
             const data = await authService.login(credentials);
-            console.log(data.user)
-            setUser(data.user);
-            console.log('useauthstore/loginuser' + user)
-            setError(null);
+
+            if (data.error) throw new Error(data.message || 'Login failed');
+
+            if (data.user && data.token) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                set({ user: data.user, error: null });
+            }
+
             return data;
         } catch (err) {
-            setError(err.message || 'Login failed');
-            throw err;
+            const message = err?.response?.data?.message || err?.message || 'Login failed';
+            set({ error: message });
+            throw new Error(message);
         } finally {
-            setLoading(false);
+            set({ loading: false });
         }
-    };
+    },
 
-    const register = async (userData) => {
+    // ✅ REGISTER
+    register: async (userData) => {
+        set({ loading: true });
         try {
-            setLoading(true);
             const data = await authService.register(userData);
-            setError(null);
+            set({ error: null });
             return data;
         } catch (err) {
-            setError(err.message || 'Registration failed');
+            set({ error: err.message || 'Registration failed' });
             throw err;
         } finally {
-            setLoading(false);
+            set({ loading: false });
         }
-    };
+    },
 
-    const logout = async () => {
+    // ✅ GET CURRENT USER (Optional dipanggil saat mount untuk verifikasi token)
+    getCurrentUser: async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+
+        set({ loading: true });
+        try {
+            const response = await authService.getCurrentUser(token);
+            const user = response.data?.user;
+
+            if (user) {
+                set({ user, error: null });
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+
+            return user;
+        } catch (err) {
+            set({ error: err.message || 'Gagal mendapatkan data pengguna' });
+            return null;
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    // ✅ UPDATE PROFILE
+    updateProfile: async (userData) => {
+        set({ loading: true });
+        try {
+            const data = await authService.updateProfile(userData);
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                set({ user: data.user, error: null });
+            }
+            return data;
+        } catch (err) {
+            set({ error: err.message || 'Update profile gagal' });
+            throw err;
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    // ✅ CHANGE PASSWORD
+    changePassword: async (passwordData) => {
+        set({ loading: true });
+        try {
+            const data = await authService.changePassword(passwordData);
+            set({ error: null });
+            return data;
+        } catch (err) {
+            set({ error: err.message || 'Gagal mengganti password' });
+            throw err;
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    // ✅ LOGOUT
+    logout: async () => {
         try {
             await authService.logout();
-            setUser(null);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Logout failed');
-            throw err;
-        }
-    };
+        } catch (_) { }
 
-    const updateProfile = async (userData) => {
-        try {
-            setLoading(true);
-            const data = await authService.updateProfile(userData);
-            setUser(data.user);
-            setError(null);
-            return data;
-        } catch (err) {
-            setError(err.message || 'Profile update failed');
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        set({ user: null, error: null });
+    },
 
-    const changePassword = async (passwordData) => {
-        try {
-            setLoading(true);
-            const data = await authService.changePassword(passwordData);
-            setError(null);
-            return data;
-        } catch (err) {
-            setError(err.message || 'Password change failed');
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
+    // ✅ AUTH CHECK
+    isAuthenticated: () => !!get().user,
 
-    return {
-        user,
-        loading,
-        error,
-        login,
-        register,
-        logout,
-        updateProfile,
-        changePassword,
-        isAuthenticated: authService.isAuthenticated()
-    };
-}; 
+    // ✅ CLEAR ERROR
+    clearError: () => set({ error: null }),
+}));

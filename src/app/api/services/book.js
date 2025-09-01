@@ -1,29 +1,41 @@
 import axios from "axios";
 import { config } from "../../../config";
-
-export const getProducts = async (params) => {
-    return await axios.get(`${config.api_host}/api/v2/book`, { params });
-};
-
-export const getCategories = async (params) => {
-    return await axios.get(`${config.api_host}/api/v2/category`, { params });
-}
-
-export const getTagsByCategory = async (category) => {
-    return await axios.get(`${config.api_host}/api/v2/tag/${category}`);
-}
-
-
-
-import api from '../index';
+import api from '../axios/index';
 import { postFormData, putFormData } from '../helpers/formRequest';
 
-export const getAllBooks = () => api.get('/books');
 
-export const getBookById = (id) => api.get(`/books/${id}`);
 
-export const createBook = (formData) => postFormData('/books', formData);
+export const bookService = {
+    getAllBooks: async (params) => {
+        const data = await axios.get(`${config.api_host}/api/v2/book`, { params });
+        // console.log(params);
+        return data.data;
+    },
 
-export const updateBook = (id, formData) => putFormData(`/books/${id}`, formData);
+    getFavoriteBooks: async (params) => {
+        const data = await axios.get(`${config.api_host}/api/v2/book/favorite`, { params });
+        return data.data;
+    },
 
-export const deleteBook = (id) => api.delete(`/books/${id}`);
+    getNewArrival: async (params) => {
+        const data = await axios.get(`${config.api_host}/api/v2/book/new-arrival`, { params });
+        return data.data;
+    },
+
+    getNewRelease: async (params) => {
+        const data = await axios.get(`${config.api_host}/api/v2/book/new-release`, { params });
+        return data.data;
+    },
+
+    getBookById: async (id) => {
+        const data = await axios.get(`${config.api_host}/api/v2/book/${id}`);
+        return data.data;
+    },
+
+    getCategories: async (params) => {
+        return await axios.get(`${config.api_host}/api/v2/category`, { params });
+    },
+    getTagsByCategory: async (category) => {
+        return await axios.get(`${config.api_host}/api/v2/tag/${category}`);
+    },
+}

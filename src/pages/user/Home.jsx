@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import Hero from '../../components/Hero';
-import Category from '../../components/Category';
 import PopularBooks from '../../components/PopularBook';
-import CTA from '../../components/CTA'
+import NewRelease from '../../components/NewRelease';
+import NewArrivalBooks from '../../components/NewArrivalBook';
 
 const Home = () => {
     useEffect(() => {
@@ -13,9 +13,9 @@ const Home = () => {
     return (
         <div className="min-h-screen">
             <Hero />
-            <Category />
             <PopularBooks />
-            <CTA />
+            <NewRelease />
+            <NewArrivalBooks />
         </div>
     );
 };

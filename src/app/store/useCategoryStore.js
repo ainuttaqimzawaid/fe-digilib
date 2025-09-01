@@ -12,7 +12,7 @@ const useCategoryStore = create((set) => ({
     getAllCategories: async () => {
         try {
             set({ loading: true, error: null });
-            const data = await categoryService.getAllCategories();
+            const data = await categoryService.getAll();
             set({ categories: data, loading: false });
             return data;
         } catch (error) {
@@ -28,7 +28,7 @@ const useCategoryStore = create((set) => ({
     getCategoryById: async (id) => {
         try {
             set({ loading: true, error: null });
-            const data = await categoryService.getCategoryById(id);
+            const data = await categoryService.getById(id);
             set({ currentCategory: data, loading: false });
             return data;
         } catch (error) {
@@ -44,7 +44,7 @@ const useCategoryStore = create((set) => ({
     getBooksByCategory: async (categoryId) => {
         try {
             set({ loading: true, error: null });
-            const data = await categoryService.getBooksByCategory(categoryId);
+            const data = await categoryService.getBooks(categoryId);
             set({ categoryBooks: data, loading: false });
             return data;
         } catch (error) {

@@ -4,10 +4,6 @@ import api from '../axios/index';
 export const authService = {
     async login(credentials) {
         const response = await api.post('/auth/login', credentials);
-        if (response.token) {
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
-        }
         return response;
     },
 
@@ -21,10 +17,13 @@ export const authService = {
         localStorage.removeItem('user');
     },
 
-    async getCurrentUser() {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
+    async getCurrentUser(token) {
+        const res = await api.get('/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return res;
     },
+
 
     async updateProfile(userData) {
         const response = await api.put('/auth/profile', userData);

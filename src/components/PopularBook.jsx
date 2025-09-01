@@ -1,13 +1,41 @@
+import { useEffect } from "react";
+import useBookStore from "../app/store/useBookStore";
+import CardBook from "./CardProduct";
+import { FaArrowRight } from "react-icons/fa";
+import CardProductPlaceholder from "./CardProductPlaceholder";
+
 const PopularBooks = () => {
+  const { favoriteBooks, loading, error, getFavoriteBooks } = useBookStore();
+
+  useEffect(() => {
+    getFavoriteBooks();
+  }, []);
   return (
-    <section className="container mx-auto py-12 px-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">Popular This Week</h3>
-      <div className="p-6 bg-white shadow-lg rounded-lg w-60">
-        <img src="book.jpg" alt="Book Cover" className="w-full h-40 object-cover rounded-md" />
-        <h4 className="mt-4 font-semibold">The Digital Age</h4>
-        <p className="text-gray-600 text-sm">by Sarah Johnson</p>
-        <p className="text-yellow-500 mt-1">⭐⭐⭐⭐ 4.8</p>
-        <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md w-full">Borrow Now</button>
+    <section className="container mx-auto pt-8 px-6 bg-white mt-4 rounded-2xl">
+      {console.log(favoriteBooks)}
+      <h3 className="text-3xl font-bold mb-4">Reader's Favorite Books</h3>
+      <div className="flex flex-wrap gap-4">
+        {
+          loading === true ? (
+            Array.from({ length: 5 }).map((_, idx) => (
+              <div key={idx} md={3}>
+                <CardProductPlaceholder />
+              </div>
+            ))
+          ) : favoriteBooks.length === 0 ? (
+            <div style={{ textAlign: 'center', width: '100%', padding: '100px 0', color: '#6e736f' }}>
+              <h1>Produk tidak ditemukan</h1>
+            </div>
+          ) : (
+            favoriteBooks.map((book, i) => (
+              <CardBook key={i} item={book} />
+            ))
+          )
+        }
+        <button className="h-auto flex items-center gap-2 text-amber-500">
+          <p>Selengkapnya</p>
+          <FaArrowRight />
+        </button>
       </div>
     </section>
   );
