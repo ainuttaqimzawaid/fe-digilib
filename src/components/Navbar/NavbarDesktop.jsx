@@ -26,7 +26,14 @@ const NavbarDesktop = ({ isScrolled, isAuthenticated }) => {
                         <button
                             className={`px-3 py-2 hover:text-[#fbe488] transition-colors ${location.pathname === menu.path ? "font-bold text-[#fbe488]" : ""
                                 }`}
-                            onClick={() => navigate(menu.path)}
+                            onClick={() => {
+                                if (menu.path === "/my-library" && !isAuthenticated) {
+                                    navigate("/login");
+                                } else {
+                                    navigate(menu.path);
+                                }
+                                setIsMenuOpen(false);
+                            }}
                         >
                             {menu.name}
                         </button>

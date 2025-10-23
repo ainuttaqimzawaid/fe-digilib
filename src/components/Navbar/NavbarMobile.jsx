@@ -110,7 +110,11 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
                                 className={`block w-full text-left px-4 py-2 hover:text-[#fbe488] ${location.pathname === menu.path ? "text-[#fbe488]" : ""
                                     }`}
                                 onClick={() => {
-                                    navigate(menu.path);
+                                    if (menu.path === "/my-library" && !isAuthenticated) {
+                                        navigate("/login");
+                                    } else {
+                                        navigate(menu.path);
+                                    }
                                     setIsMenuOpen(false);
                                 }}
                             >
