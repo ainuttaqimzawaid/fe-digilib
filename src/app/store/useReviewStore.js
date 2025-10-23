@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { reviewService } from '../api/services/review';
 
 const useReviewStore = create((set) => ({
-    bookReviews: {}, // simpan review berdasarkan bookId
-    userReviews: [], // simpan review untuk user
+    bookReviews: {},
+    userReviews: [],
     loading: false,
     error: null,
 
@@ -13,7 +13,7 @@ const useReviewStore = create((set) => ({
             const response = await reviewService.createReview(payload);
 
             set((state) => {
-                const bookId = response.bookId; // asumsi API balikin bookId
+                const bookId = response.bookId;
                 return {
                     bookReviews: {
                         ...state.bookReviews,
@@ -33,7 +33,7 @@ const useReviewStore = create((set) => ({
         try {
             set({ loading: true, error: null });
             const response = await reviewService.getReviewsByBook(id);
-            console.log(response);
+            // console.log(response);
 
             set((state) => ({
                 bookReviews: response

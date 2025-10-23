@@ -22,7 +22,7 @@ export const UserLoginPage = () => {
 
     useEffect(() => {
         if (user) {
-            navigate('/user/dashboard');
+            navigate('/');
         }
         clearError();
     }, [user, navigate, clearError]);

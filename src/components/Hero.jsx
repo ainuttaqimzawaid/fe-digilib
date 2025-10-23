@@ -1,24 +1,22 @@
 const Hero = () => {
   return (
-    <section className="w-screen relative bg-[url('/src/assets/bg-hero-image.jpg')] bg-cover bg-center bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-black/40">
-      <div className="bg-black/20 backdrop-blur-[2px] pt-40 pb-20">
+    <section className="w-screen relative bg-[url('/src/assets/bg-hero-image.jpg')] md:bg-cover bg-center bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-black/40">
+      <div className="bg-black/20 backdrop-blur-[2px] pt-28 md:pt-40 pb-20">
         <div className="container mx-auto flex flex-col md:flex-row items-center px-6 max-w-7xl relative z-10">
           <div className="md:w-1/2 space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg">
+            <h1 className="!text-3xl md:!text-5xl font-bold text-white leading-tight drop-shadow-lg">
               Discover Your Next <span className="text-blue-400">Adventure</span> in Books
             </h1>
-            <p className="text-lg text-gray-100 leading-relaxed drop-shadow">
+            <p className="!text-sm md:!text-lg text-gray-100 leading-relaxed drop-shadow">
               Explore our vast collection of digital books. From timeless classics to contemporary bestsellers,
               your perfect read is just a click away. Start your reading journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition duration-300 shadow-lg hover:shadow-xl">
-                Start Reading
-              </button>
-              <button className="border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition duration-300">
-                Explore Library
+                More Info
               </button>
             </div>
+
             <div className="flex items-center gap-8 pt-6">
               <div className="flex items-center gap-2">
                 <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +32,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="md:w-1/2 mt-12 md:mt-0 relative">
+          <div className="md:w-1/2 mt-12 md:mt-0 relative hidden md:block">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-8 shadow-2xl transform hover:scale-105 transition duration-500 border border-white/10">
               <div className="absolute -top-4 -right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg">
                 <span className="text-sm font-medium">Featured</span>

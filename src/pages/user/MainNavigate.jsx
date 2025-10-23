@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Navbar from '../../components/Navbar';
+// import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { Route, Routes } from 'react-router-dom';
 import Categories from './Category';
@@ -9,6 +9,7 @@ import Notifications from './Notification';
 import SearchPage from './SearchPage';
 import BookDetail from './BookDetail';
 import Home from './Home';
+import Navbar from '../../components/Navbar/Navbar';
 
 const MainNavigate = () => {
     useEffect(() => {

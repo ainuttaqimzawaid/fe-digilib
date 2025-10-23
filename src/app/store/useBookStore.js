@@ -1,241 +1,325 @@
 import { create } from 'zustand';
 import { bookService } from '../api/services/book';
 
-const useBookStore = create((set) => ({
-    allBooks: [],
-    favoriteBooks: [],
-    newArrival: [],
-    newRelease: [],
-    categoryBooks: [],
-    currentBook: null,
-    loading: false,
-    loading: {
-        allBooks: false,
-        favoriteBooks: false,
-        newArrival: false,
-        newRelease: false,
-        categoryBooks: false,
-        currentBook: false,
-    },
-    error: null,
+// Status constants
+const STATUS = {
+    IDLE: 'idle',
+    PROCESS: 'process',
+    SUCCESS: 'success',
+    ERROR: 'error'
+};
 
-    // Get all books
+const useBookStore = create((set) => ({
+    // States
+    allBooks: { count: 0, data: [] },
+    favoriteBooks: { count: 0, data: [], nextCursor: null },
+    newArrival: { count: 0, data: [], nextCursor: null },
+    newRelease: { count: 0, data: [], nextCursor: null },
+    categoryBooks: [],
+    featuredBooks: [],
+    currentBook: null,
+    error: null,
+    isFetched: false,
+    loading: {
+        allBooks: STATUS.IDLE,
+        favoriteBooks: STATUS.IDLE,
+        newArrival: STATUS.IDLE,
+        newRelease: STATUS.IDLE,
+        categoryBooks: STATUS.IDLE,
+        featuredBooks: STATUS.IDLE,
+        currentBook: STATUS.IDLE
+    },
+
+    // Helpers
+    setLoading: (key, status) =>
+        set((state) => ({
+            loading: { ...state.loading, [key]: status }
+        })),
+
+    setError: (message) =>
+        set({
+            error: message || 'An unexpected error occurred'
+        }),
+
+    clearError: () => set({ error: null }),
+
+    // Fetch All Books
     getAllBooks: async (params = {}) => {
+        const { setLoading, setError } = useBookStore.getState();
+        // const limit = parseInt(params.limit, 10) || 10;
+        // const lastId = params.lastId ? parseInt(params.lastId, 10) : null;
+
+        // console.log('📚 Fetching all books → limit:', limit, 'lastId:', lastId);
+
         try {
-            set((state) => ({
-                loading: true,
-                error: null
-            }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            setLoading('allBooks', STATUS.PROCESS);
+
             const data = await bookService.getAllBooks(params);
-            console.log(data);
-            set((state) => ({
-                allBooks: data,
-                loading: false,
-            }));
-            return data;
+
+            set((state) => {
+                // Kalau tidak ada cursor (berarti request pertama), replace data
+                if (!params.lastId && !params.lastCreatedAt) {
+                    return {
+                        allBooks: { count: data.count, data: data.rows },
+                        error: null,
+                    };
+                }
+
+                // Kalau ada cursor, append data baru ke list lama
+                return {
+                    allBooks: {
+                        count: data.count,
+                        data: [
+                            ...state.allBooks.data,
+                            ...data.rows.filter(
+                                (b) => !state.allBooks.data.some((x) => x.id === b.id)
+                            ), // Hindari duplikat
+                        ],
+                    },
+                    error: null,
+                };
+            });
+
+            setLoading('allBooks', STATUS.SUCCESS);
+            return data; // penting agar frontend bisa ambil nextCursor
         } catch (error) {
-            set((state) => ({
-                error: error.message || 'Failed to fetch books',
-                loading: false
-            }));
+            setError(error.message);
+            setLoading('allBooks', STATUS.ERROR);
             throw error;
         }
     },
 
     getFavoriteBooks: async (params = {}) => {
+        const { setLoading, setError } = useBookStore.getState();
+
+        // const limit = parseInt(params.limit, 10) || 5;
+        // const lastId = parseInt(params.lastId, 10) || null;
+        // const lastReadCount = parseInt(params.lastReadCount, 10) || null;
+        // console.log('Fetching favorite books with limit:', limit, 'and lastId:', lastId, 'and lastReadCount:', lastReadCount);
         try {
-            set((state) => ({
-                loading: true,
-                error: null
-            }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            setLoading('favoriteBooks', STATUS.PROCESS);
             const data = await bookService.getFavoriteBooks(params);
-            set((state) => ({
-                favoriteBooks: data,
-                loading: false,
-            }));
-        } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch books',
-                loading: false
+
+            // console.log('Fetched favorite books data:', data);
+
+            set((state) => {
+                if (!params.lastId) {
+                    // Fetch pertama → ganti data lama
+                    return {
+                        favoriteBooks: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
+                        error: null,
+                    };
+                }
+                // Fetch berikutnya → gabung data baru tanpa duplikat
+                return {
+                    favoriteBooks: {
+                        count: data.count,
+                        data: [
+                            ...state.favoriteBooks.data,
+                            ...data.rows.filter((b) => !state.favoriteBooks.data.some((x) => x.id === b.id)),
+                        ],
+                        nextCursor: data.nextCursor,
+                    },
+                    error: null,
+                };
             });
+
+            setLoading('favoriteBooks', STATUS.SUCCESS);
+        } catch (error) {
+            setError(error.message);
+            setLoading('favoriteBooks', STATUS.ERROR);
             throw error;
         }
     },
 
     getNewArrival: async (params = {}) => {
+        const { setLoading, setError } = useBookStore.getState();
+        // const limit = parseInt(params.limit, 10) || 10;
+        // const lastId = params.lastId ? parseInt(params.lastId, 10) : null;
+        // const lastCreatedAt = params.lastCreatedAt ? parseInt(params.lastCreatedAt, 10) : null;
+        // console.log('Fetching favorite books with limit:', limit, 'and lastId:', lastId, 'and lastCreatedAt:', lastCreatedAt);
+
         try {
-            set((state) => ({
-                loading: true,
-                error: null
-            }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            setLoading('newArrival', STATUS.PROCESS);
             const data = await bookService.getNewArrival(params);
-            set((state) => ({
-                newArrival: data,
-                loading: false,
-            }));
+            // console.log('Fetched new arrival books data:', data);
+
+            set((state) => {
+                if (!params.lastId) {
+                    // Fetch pertama → ganti data lama
+                    return {
+                        newArrival: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
+                        error: null,
+                    };
+                }
+                // Fetch berikutnya → gabung data baru tanpa duplikat
+                return {
+                    newArrival: {
+                        count: data.count,
+                        data: [
+                            ...state.newArrival.data,
+                            ...data.rows.filter((b) => !state.newArrival.data.some((x) => x.id === b.id)),
+                        ],
+                        nextCursor: data.nextCursor,
+                    },
+                    error: null,
+                };
+            });
+
+            setLoading('newArrival', STATUS.SUCCESS);
+            return data;
         } catch (error) {
-            set((state) => ({
-                loading: true,
-                error: error.message || 'Failed to fetch books',
-            }));
+            setError(error.message);
+            setLoading('newArrival', STATUS.ERROR);
             throw error;
         }
     },
 
     getNewRelease: async (params = {}) => {
+        const { setLoading, setError } = useBookStore.getState();
+        // const limit = parseInt(params.limit, 10) || 10;
+        // const lastId = params.lastId ? parseInt(params.lastId, 10) : null;
+        // const lastYear = params.lastYear ? parseInt(params.lastYear, 10) : null;
+        // console.log('Fetching favorite books with limit:', limit, 'and lastId:', lastId, 'and lastYear:', lastYear);
+
         try {
-            set((state) => ({
-                loading: true,
-                error: null
-            }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            setLoading('newRelease', STATUS.PROCESS);
             const data = await bookService.getNewRelease(params);
-            set((state) => ({
-                newRelease: data,
-                loading: false,
-            }));
+
+            set((state) => {
+                if (!params.lastId) {
+                    // Fetch pertama (replace)
+                    return {
+                        newRelease: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
+                        error: null,
+                    };
+                }
+                // Fetch berikutnya (append)
+                return {
+                    newRelease: {
+                        count: data.count,
+                        data: [
+                            ...state.newRelease.data,
+                            ...data.rows.filter(
+                                (book) => !state.newRelease.data.some((b) => b.id === book.id)
+                            ),
+                        ],
+                        nextCursor: data.nextCursor,
+                    },
+                    error: null,
+                };
+            });
+
+            setLoading('newRelease', STATUS.SUCCESS);
+            return data;
         } catch (error) {
-            set((state) => ({
-                loading: true,
-                error: error.message || 'Failed to fetch books',
-            }));
+            setError(error.message);
+            setLoading('newRelease', STATUS.ERROR);
             throw error;
         }
     },
 
-    // Get book by ID
     getBookById: async (id) => {
+        const { setLoading, setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
+            setLoading('currentBook', STATUS.PROCESS);
             const data = await bookService.getBookById(id);
-            set({ currentBook: data, loading: false });
+            set({ currentBook: data, error: null });
+            setLoading('currentBook', STATUS.SUCCESS);
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch book',
-                loading: false
-            });
+            setError(error.message);
+            setLoading('currentBook', STATUS.ERROR);
             throw error;
         }
     },
 
-    // Get featured books
     getFeaturedBooks: async () => {
+        const { setLoading, setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
+            setLoading('featuredBooks', STATUS.PROCESS);
             const data = await bookService.getFeaturedBooks();
-            set({ featuredBooks: data, loading: false });
+            set({ featuredBooks: data, error: null });
+            setLoading('featuredBooks', STATUS.SUCCESS);
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch featured books',
-                loading: false
-            });
+            setError(error.message);
+            setLoading('featuredBooks', STATUS.ERROR);
             throw error;
         }
     },
 
-    // Get books by category
     getBooksByCategory: async (categoryId, params = {}) => {
+        const { setLoading, setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
+            setLoading('categoryBooks', STATUS.PROCESS);
             const data = await bookService.getBooksByCategory(categoryId, params);
-            set({ books: data, loading: false });
+            set({ categoryBooks: data, error: null });
+            setLoading('categoryBooks', STATUS.SUCCESS);
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch books by category',
-                loading: false
-            });
+            setError(error.message);
+            setLoading('categoryBooks', STATUS.ERROR);
             throw error;
         }
     },
 
-    // Get book reviews
     getBookReviews: async (bookId) => {
+        const { setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
             const data = await bookService.getBookReviews(bookId);
-            set({ loading: false });
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch book reviews',
-                loading: false
-            });
+            setError(error.message);
             throw error;
         }
     },
 
-    // Add book review
     addBookReview: async (bookId, reviewData) => {
+        const { setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
             const data = await bookService.addBookReview(bookId, reviewData);
-            set({ loading: false });
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to add review',
-                loading: false
-            });
+            setError(error.message);
             throw error;
         }
     },
 
-    // Get reading history
+    // Reading History
     getReadingHistory: async () => {
+        const { setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
             const data = await bookService.getReadingHistory();
-            set({ loading: false });
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to fetch reading history',
-                loading: false
-            });
+            setError(error.message);
             throw error;
         }
     },
 
-    // Add to reading list
+    // Reading List
     addToReadingList: async (bookId) => {
+        const { setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
             const data = await bookService.addToReadingList(bookId);
-            set({ loading: false });
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to add to reading list',
-                loading: false
-            });
+            setError(error.message);
             throw error;
         }
     },
 
-    // Remove from reading list
     removeFromReadingList: async (bookId) => {
+        const { setError } = useBookStore.getState();
         try {
-            set({ loading: true, error: null });
             const data = await bookService.removeFromReadingList(bookId);
-            set({ loading: false });
             return data;
         } catch (error) {
-            set({
-                error: error.message || 'Failed to remove from reading list',
-                loading: false
-            });
+            setError(error.message);
             throw error;
         }
-    },
-
-    // Clear error
-    clearError: () => set({ error: null }),
+    }
 }));
 
-export default useBookStore; 
+export default useBookStore;

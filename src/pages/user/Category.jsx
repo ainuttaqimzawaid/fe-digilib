@@ -26,7 +26,7 @@ const ScrollCategory = ({ categories, handleCategoryClick, selectedCategory }) =
   return (
     <div
       ref={scrollRef}
-      className="overflow-x-auto flex gap-4 py-2 px-2 col-span-7"
+      className="overflow-x-auto flex md:gap-4 py-2 px-2 col-span-3 md:col-span-7"
       style={{ scrollBehavior: 'smooth', whiteSpace: 'nowrap', scrollbarWidth: 'none' }}
     >
       {categories?.length === 0 ? (
@@ -35,7 +35,7 @@ const ScrollCategory = ({ categories, handleCategoryClick, selectedCategory }) =
         categories.map((cat, index) => (
           <button
             key={index}
-            className={`px-4 py-2 rounded-full text-sm border ${selectedCategory?.id === cat.id ? 'bg-blue-200 border-blue-600' : 'border-gray-300'
+            className={`px-4 py-2 !rounded-full text-sm border ${selectedCategory?.id === cat.id ? 'bg-blue-200 border-blue-600' : 'border-gray-300'
               } hover:bg-blue-100`}
             onClick={() => handleCategoryClick(cat)}
           >
@@ -97,11 +97,17 @@ const Categories = () => {
 
 
   return (
-    <section className="container mx-auto py-32 px-6 min-h-screen">
+    <section className="container mx-auto py-20 md:py-32 px-5 min-h-screen">
       <h3 className="text-xl font-bold text-gray-800 mb-4">Browse by Category</h3>
       <div className={`grid ${selectedCategory === null ? 'md:grid-cols-4' : ''}  gap-4 items-center`}>
         {
-          selectedCategory === null ? (categories.map((cat, index) => (
+          selectedCategory === null ? loading ? (Array.from({ length: 12 }).map((cat, index) => (
+            <div
+              key={index}
+              className={`p-4 rounded-lg shadow-md text-left h-16 animate-pulse bg-gray-200`}
+            >
+            </div>
+          ))) : (categories.map((cat, index) => (
             <button
               key={index}
               className={`p-4 rounded-lg shadow-md text-left ${categoryColors[index % categoryColors.length]} ${selectedCategory?.id === cat.id ? 'ring-2 ring-blue-500' : ''}`}
@@ -112,13 +118,13 @@ const Categories = () => {
             </button>
           )))
             :
-            (<div className="grid grid-cols-2 md:grid-cols-8 gap-4 items-center">
+            (<div className="grid grid-cols-4 md:grid-cols-8 gap-4 items-center">
               <button
-                className="px-4 flex items-center !rounded-full hover:bg-blue-100 !border-[#744c0d] h-12 gap-1"
+                className="!p-2 md:!px-4 flex items-center !rounded-full hover:bg-blue-100 !border-[#744c0d] md:h-12 gap-1 w-[85px] md:w-[135px]"
                 onClick={handleAllBooksClick}
               >
-                <p className="text-lg font-bold">All Books</p>
-                <MdOutlineKeyboardDoubleArrowDown />
+                <p className="text-sm md:text-lg font-bold">All Books</p>
+                <MdOutlineKeyboardDoubleArrowDown className='hidden md:block' />
               </button>
               <ScrollCategory
                 categories={categories}
@@ -135,7 +141,7 @@ const Categories = () => {
             Books in {capitalizeFirstLetter(selectedCategory.name)}
           </h3>
           {selectedBooks.length > 0 ? (
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-3">
               {selectedBooks.map((book, i) => (
                 <CardBook key={i} item={book} />
               ))}

@@ -52,7 +52,7 @@ const ProfileButton = () => {
                             className="w-14 h-14 rounded-full border"
                         />
                         :
-                        <div className="w-14 h-14 text-3xl bg-gray-500 text-white flex items-center justify-center rounded-full">
+                        <div className="w-8 h-8 md:w-14 md:h-14 text-2xl md:text-3xl bg-gray-500 text-white flex items-center justify-center rounded-full">
                             {user.userName.charAt(0).toUpperCase()}
                         </div>}
                 </button>

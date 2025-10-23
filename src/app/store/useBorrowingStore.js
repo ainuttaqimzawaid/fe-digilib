@@ -12,7 +12,7 @@ const useBorrowingStore = create((set) => ({
         try {
             set((state) => ({ loading: { ...state.loading, allBooks: true }, error: null }));
             const response = await borrowingService.createBorrowing(payload);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
             set((state) => ({
                 borrowedBooks: [...state.borrowedBooks, response.borrowing],
             }));
@@ -26,7 +26,7 @@ const useBorrowingStore = create((set) => ({
     getBorrowings: async () => {
         try {
             set((state) => ({ loading: true, error: null }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await borrowingService.getBorrowings();
             // pastikan response selalu array
             set({ borrowedBooks: Array.isArray(response) ? response : [response] });
@@ -58,7 +58,7 @@ const useBorrowingStore = create((set) => ({
                 loading: true,
                 error: null,
             }));
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await borrowingService.returnBorrowing(id);
 
             // Hapus buku yang dikembalikan dari borrowedBooks

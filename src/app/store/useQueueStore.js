@@ -51,9 +51,6 @@ const useQueueStore = create((set, get) => ({
                 myQueue: state.myQueue.filter((q) => q.id !== id),
                 loading: false,
             }));
-
-            // (Opsional) Refetch untuk jaga konsistensi
-            // await get().fetchMyQueue();
         } catch (err) {
             set((state) => ({
                 error: err.response?.data?.message || err.message,

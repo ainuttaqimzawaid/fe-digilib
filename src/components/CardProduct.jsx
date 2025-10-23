@@ -16,14 +16,18 @@ const CardBook = ({ Id, item, context }) => {
         navigate(`/book/${item.id}`);
     };
     return (
-        <div className="w-40 rounded">
-            {console.log(item)}
+        <div className="w-36 md:w-40 rounded">
+            {/* {console.log(item)} */}
             <button
-                className="w-40 !p-0"
+                className="w-36 md:w-40 !p-0"
                 onClick={handleDetailBook}>
                 <img
-                    src={`${config.api_host}/public/images/books/${item.image_url}`}
-                    alt={item.image_url} className="w-full object-cover shadow-2xl h-56" />
+                    // image from assets folder
+                    // src={`${config.api_host}/public/images/books/${item.image_url}`}
+
+                    // image from cloudinary
+                    src={item.image_url}
+                    alt={item.image_url} className="w-full object-cover shadow-2xl h-48 md:h-56" />
                 <div className="py-3">
                     <h2 className="text-lg text-gray-700 truncate">{item.title}</h2>
                     <p className="text-sm text-gray-500">{item.author}</p>

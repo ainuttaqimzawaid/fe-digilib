@@ -60,29 +60,18 @@ const MyLibrary = () => {
         }
     };
 
-
-    // if (error) {
-    //     return (
-    //         <div className="flex justify-center items-center min-h-screen">
-    //             <div className="text-red-500 text-center">
-    //                 <h2 className="text-2xl font-bold mb-2">Error</h2>
-    //                 <p>{error}</p>
-    //             </div>
-    //         </div>
-    //     );
-    // }
-
     return (
-        <div className="max-w-5xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-6">My Library</h1>
+        <div className="max-w-5xl mx-auto py-20 md:py-32 px-6">
+            {/* {console.log(borrowingLoading)} */}
+            <h3 className="md:hidden text-xl font-bold text-gray-800 mb-4">My Library</h3>
 
             {/* Tab Menu */}
-            <div className="flex gap-2 overflow-x-auto border-b pb-2 mb-6">
+            <div className="flex md:gap-2 overflow-x-auto border-b pb-2 mb-6">
                 {tabs.map((tab) => (
                     <button
                         key={tab}
                         onClick={() => handleFetch(tab)}
-                        className={`px-4 py-2 whitespace-nowrap rounded-full transition text-sm ${activeTab === tab
+                        className={`sm:!px-1 md:!px-4 !py-2 whitespace-nowrap rounded-full transition !text-sm md:!text-base ${activeTab === tab
                             ? "bg-blue-600 text-white font-semibold"
                             : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
@@ -97,7 +86,7 @@ const MyLibrary = () => {
                 {activeTab === 'Borrowed' && (
                     <div className="w-full">
                         <h2 className="text-xl font-semibold mb-4">Borrowed Books</h2>
-                        <div className="w-full flex flex-wrap gap-6">
+                        <div className="w-full flex flex-wrap gap-3 md:gap-4">
                             {borrowingLoading ? (
                                 Array.from({ length: 5 }).map((_, idx) => (
                                     <div key={idx} md={3}>
@@ -117,7 +106,7 @@ const MyLibrary = () => {
                     <div className="w-full">
                         {/* {console.log(myQueue)} */}
                         <h2 className="text-xl font-semibold mb-2">Queue List</h2>
-                        <div className="w-full flex flex-wrap gap-6">
+                        <div className="w-full flex flex-wrap gap-3 md:gap-4">
                             {queueLoading ? (
                                 Array.from({ length: 5 }).map((_, idx) => (
                                     <div key={idx} md={3}>
@@ -136,7 +125,7 @@ const MyLibrary = () => {
                 {activeTab === "History" && (
                     <div className="w-full">
                         <h2 className="text-xl font-semibold mb-2">Borrowing History</h2>
-                        <div className="w-full flex flex-wrap gap-6">
+                        <div className="w-full flex flex-wrap gap-3 md:gap-4">
                             {borrowingLoading ? (
                                 Array.from({ length: 5 }).map((_, idx) => (
                                     <div key={idx} md={3}>
@@ -155,7 +144,8 @@ const MyLibrary = () => {
                 {activeTab === "Reviews" && (
                     <div className="w-full">
                         <h2 className="text-xl font-semibold mb-2">Your Reviews</h2>
-                        <div className="w-full flex flex-wrap gap-6">
+                        {console.log(userReviews)}
+                        <div className="w-full flex flex-wrap gap-3 md:gap-4">
                             {reviewLoading ? (
                                 Array.from({ length: 5 }).map((_, idx) => (
                                     <div key={idx} md={3}>

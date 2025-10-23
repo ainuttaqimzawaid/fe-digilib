@@ -4,11 +4,11 @@ import { FaFacebook, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <section className="bg-[#462d07] text-white py-8">
+    <section className="bg-[#462d07] text-white py-8 text-sm md:text-base">
       <div className="container flex justify-around mx-auto gap-8">
         <div className="flex flex-col items-center">
-          <img src={Logo} alt="Cendria_Logo" className="w-12 h-12" />
-          <p className="max-w-44">Cendria Digital Library</p>
+          <img src={Logo} alt="Cendria_Logo" className="w-6 md:w-12 h-6 md:h-12" />
+          <p className="max-w-36 pl-6 md:pl-0">Cendria Digital Library</p>
         </div>
         <ul>
           <li>About Us</li>

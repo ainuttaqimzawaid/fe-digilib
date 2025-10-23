@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css'
-import Navbar from './components/Navbar';
 import { UserLoginPage } from './pages/Login';
 import Register from './pages/Register';
 import MainNavigate from './pages/user/MainNavigate';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
   return (
@@ -16,7 +18,18 @@ function App() {
           <Route path="/register" element={<Register />} />
           {/* <Route path="/detail/:id" element={<Detail />} /> */}
         </Routes>
-        {/* <Footer /> */}
+        <ToastContainer
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </BrowserRouter>
     </div>
   );

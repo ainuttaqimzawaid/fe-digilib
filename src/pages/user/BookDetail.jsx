@@ -1,18 +1,21 @@
 // pages/BookDetail.jsx
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useBookStore from '../../app/store/useBookStore';
 import useReviewStore from '../../app/store/useReviewStore';
 import StarRating from '../../components/RatingBook';
 import BookInfo from '../../components/BookInfo';
 import Loading from '../../components/Loading';
+import BookInfoPlaceholder from '../../components/BookInfoPlaceholder';
 
 
 const BookDetail = () => {
+    const detailBook = ['deskripsi', 'detail', 'ulasan'];
     const { id } = useParams();
-    const { getBookById, currentBook, error } = useBookStore();
+    const { getBookById, currentBook, loading, error } = useBookStore();
     const { getReviewsByBook, bookReviews, loading: reviewLoading } = useReviewStore();
-    const [activeTab, setActiveTab] = useState("deskripsi");
+    const [activeTab, setActiveTab] = useState(detailBook[0]);
+    const [underlineStyle, setUnderlineStyle] = useState({});
 
     useEffect(() => {
         if (id) {
@@ -21,24 +24,56 @@ const BookDetail = () => {
         }
     }, [id]);
 
-    // if (loading) return <p>Loading book...</p>;
+    const btn = document.querySelector(`[data-tab='${activeTab}']`);
+    useEffect(() => {
+        if (btn) {
+            setUnderlineStyle({
+                width: btn.offsetWidth,
+                left: btn.offsetLeft,
+            });
+        }
+    }, [activeTab, btn]);
+
     if (error) return <p className="text-red-500">{error}</p>;
-    if (!currentBook) return <p>Book not found.</p>;
 
     return (
         <div className="container mx-auto py-32 px-6 min-h-screen">
-            {console.log(bookReviews)}
+            {/* {console.log(loading.currentBook)} */}
             <div className='bg-white rounded-xl shadow-md p-6'>
                 <h2 className='text-3xl mb-4'>Detail Buku</h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                     <div>
-                        <BookInfo book={currentBook} />
+                        {
+                            loading.currentBook === 'process' ? (
+                                <BookInfoPlaceholder />
+                            ) : currentBook ? (
+                                <BookInfo book={currentBook} />
+                            ) : (
+                                <p>Buku tidak ditemukan.</p>
+                            )
+                        }
                     </div>
                     <div>
-                        <div className="flex gap-2 mb-4">
-                            <button onClick={() => setActiveTab("deskripsi")}>Deskripsi</button>
-                            <button onClick={() => setActiveTab("detail")}>Detail</button>
-                            <button onClick={() => setActiveTab("ulasan")}>Ulasan</button>
+                        <div className="relative flex gap-2 mb-4 space-x-4 border-b border-gray-200">
+                            {detailBook.map((tab) => (
+                                <button
+                                    key={tab}
+                                    data-tab={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-4 py-2 text-sm transition-colors duration-200 ${activeTab === tab
+                                        ? "text-blue-600 font-semibold"
+                                        : "text-gray-600 hover:text-gray-800"
+                                        }`}
+                                >
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                </button>
+                            ))}
+
+                            {/* underline animasi */}
+                            <span
+                                className="absolute bottom-0 h-[3px] bg-blue-600 transition-all duration-300 rounded-full"
+                                style={underlineStyle}
+                            />
                         </div>
 
                         {activeTab === "deskripsi" && (
@@ -59,7 +94,7 @@ const BookDetail = () => {
                                 </table>
                             </div>
                         )}
-                        {console.log(bookReviews.length)}
+                        {console.log(bookReviews)}
                         {activeTab === "ulasan" && (
                             <div className="flex flex-col gap-4">
                                 {reviewLoading ? (
@@ -70,9 +105,9 @@ const BookDetail = () => {
                                             <div className="w-14 h-14 text-3xl bg-gray-500 text-white flex items-center justify-center rounded-full">
                                                 {review.User?.userName?.charAt(0).toUpperCase()}
                                             </div>
-                                            {console.log(review.id)}
+                                            {console.log(review)}
                                             <div>
-                                                <p className="font-semibold">{review.User?.userName}</p>
+                                                <p className="font-semibold">{review.user?.userName}</p>
                                                 <div className="text-yellow-500">
                                                     <StarRating value={review.rating} readOnly={true} />
                                                 </div>
