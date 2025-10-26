@@ -94,7 +94,7 @@ const Register = () => {
     return (
         <section className="w-screen h-screen text-white relative bg-[url('/src/assets/bg-hero-image.jpg')] bg-cover bg-center bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-black/40">
             <div className="bg-black/20 backdrop-blur-[2px] flex items-center w-screen h-screen justify-center">
-                <div className="w-[400px] bg-black/70 shadow-amber-200 rounded-[20px] p-6 shadow-lg flex flex-col gap-5 mt-20 pb-10">
+                <div className="w-80 md:w-[400px] bg-black/70 shadow-amber-200 rounded-[20px] p-6 shadow-lg flex flex-col gap-5 mt-20 pb-10">
                     <div>
                         <h2 className="mt-6 text-center text-3xl font-extrabold">
                             Create your account

@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import useClickOutside from "../../hooks/useClickOutside";
 import NotificationDropdown from "./NotificationDropdown";
 import SearchInput from "./SearchInput";
+import { motion } from "motion/react";
 
 const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
     const navigate = useNavigate();
@@ -20,6 +21,16 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
 
     const menuRef = useRef(null);
 
+    const toggleButtonRef = useRef(null);
+
+
+    const lineProps = {
+        transition: { duration: 0.4, ease: "easeInOut" },
+        stroke: "white",
+        strokeWidth: 3.5, // sedikit lebih tebal biar jelas di ukuran besar
+        strokeLinecap: "round",
+    };
+
     // ====== Fokus otomatis ke input search ======
     useEffect(() => {
         if (showSearch && inputRef.current) {
@@ -29,20 +40,74 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
     useClickOutside(inputRef, () => setShowSearch(false));
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-    useClickOutside(menuRef, () => setIsMenuOpen(false));
+    useClickOutside(menuRef, (e) => {
+        // Jika klik masih di dalam tombol toggle, jangan tutup menu
+        if (toggleButtonRef.current && toggleButtonRef.current.contains(e.target)) {
+            return;
+        }
+        setIsMenuOpen(false);
+    });
 
     return (
         <div className="w-full  sm:hidden">
-            {/* {console.log(isMenuOpen)} */}
+            {console.log(isMenuOpen)}
             <div className="flex w-full items-center justify-between">
                 {/* Left: menu + search */}
                 <div className="flex items-center gap-2" ref={menuRef}>
-                    <button onClick={toggleMenu} className="text-white !p-1">
+                    {/* <button onClick={toggleMenu} className="text-white !p-1">
                         {isMenuOpen ? (
                             <FaXmark className="w-6 h-6" />
                         ) : (
                             <HiOutlineBars3 className="w-6 h-6" />
                         )}
+                    </button> */}
+                    <button
+                        ref={toggleButtonRef}
+                        onClick={toggleMenu}
+                        className="w-8 h-8 flex items-center justify-center !p-0 rounded-full hover:bg-gray-600 transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        <svg width="26" height="26" viewBox="0 0 24 24">
+                            {/* Garis 1 */}
+                            <motion.line
+                                x1="3"
+                                y1="6"
+                                x2="21"
+                                y2="6"
+                                {...lineProps}
+                                animate={
+                                    isMenuOpen
+                                        ? { y1: 12, y2: 12, rotate: 45 }
+                                        : { y1: 6, y2: 6, rotate: 0 }
+                                }
+                                style={{ originX: "50%", originY: "50%" }}
+                            />
+
+                            {/* Garis 2 */}
+                            <motion.line
+                                x1="3"
+                                y1="12"
+                                x2="21"
+                                y2="12"
+                                {...lineProps}
+                                animate={{ opacity: isMenuOpen ? 0 : 1 }}
+                            />
+
+                            {/* Garis 3 */}
+                            <motion.line
+                                x1="3"
+                                y1="18"
+                                x2="21"
+                                y2="18"
+                                {...lineProps}
+                                animate={
+                                    isMenuOpen
+                                        ? { y1: 12, y2: 12, rotate: -45 }
+                                        : { y1: 18, y2: 18, rotate: 0 }
+                                }
+                                style={{ originX: "50%", originY: "50%" }}
+                            />
+                        </svg>
                     </button>
 
                     {/* Search button/input */}
@@ -81,25 +146,28 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
                         <NotificationDropdown />
                         <ProfileButton />
                     </div>
-                ) : (
-                    <div className="flex gap-2">
-                        <Link
-                            to="/login"
-                            className="px-4 py-2 rounded-full text-white border border-gray-400 hover:bg-[#744c0d]"
-                        >
-                            Sign in
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="px-4 py-2 rounded-full bg-[#fbe488] text-black hover:bg-[#744c0d]"
-                        >
-                            Sign up
-                        </Link>
-                    </div>
-                )}
+                ) :
+                    showSearch ? null : (
+                        <div className="flex gap-2">
+                            <Link
+                                to="/login"
+                                className="px-4 py-2 rounded-full text-white border border-gray-400 hover:bg-[#744c0d]"
+                            >
+                                Sign in
+                            </Link>
+                            <Link
+                                to="/register"
+                                className="px-4 py-2 rounded-full bg-[#fbe488] text-black hover:bg-[#744c0d]"
+                            >
+                                Sign up
+                            </Link>
+                        </div>
+                    )
+                }
 
             </div>
             {/* ===== Mobile Menu Dropdown ===== */}
+
             {isMenuOpen && (
                 <ul
                     ref={menuRef}

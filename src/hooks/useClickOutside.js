@@ -1,20 +1,22 @@
+// hooks/useClickOutside.js
 import { useEffect } from "react";
 
-export default function useClickOutside(ref, handler) {
+export default function useClickOutside(ref, handler, exceptionRef) {
     useEffect(() => {
-        const listener = (event) => {
-            // Jika klik terjadi di dalam elemen, abaikan
-            if (!ref.current || ref.current.contains(event.target)) return;
+        function handleClickOutside(event) {
+            if (
+                !ref.current ||
+                ref.current.contains(event.target) ||
+                (exceptionRef?.current && exceptionRef.current.contains(event.target))
+            ) {
+                return;
+            }
             handler(event);
-        };
+        }
 
-        document.addEventListener("mousedown", listener);
-        // document.addEventListener("touchstart", listener);
-
-        // Cleanup
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener("mousedown", listener);
-            // document.removeEventListener("touchstart", listener);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [ref, handler]);
+    }, [ref, handler, exceptionRef]);
 }

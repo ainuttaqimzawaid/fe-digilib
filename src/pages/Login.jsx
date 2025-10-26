@@ -81,7 +81,7 @@ export const UserLoginPage = () => {
             <div className="bg-black/20 backdrop-blur-[2px] flex items-center w-screen h-screen justify-center">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-[400px] bg-black/70 shadow-amber-200 rounded-[20px] p-6 shadow-lg flex flex-col gap-5 mt-20"
+                    className="w-80 md:w-[400px] bg-black/70 shadow-amber-200 rounded-[20px] p-6 shadow-lg flex flex-col gap-5 mt-20"
                 >
                     <h1 className="text-2xl font-bold text-center mb-2 leading-tight">
                         Login
