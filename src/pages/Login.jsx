@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../app/store/useAuthStore";
 import ImageLibrary from '../assets/images/bg-hero-image.jpg';
+import { toast } from "react-toastify";
 
 export const UserLoginPage = () => {
     const navigate = useNavigate();
@@ -127,7 +128,7 @@ export const UserLoginPage = () => {
                     <div className="text-sm text-gray-400 text-end">
                         <button className="hover:underline !p-0"
                             onClick={
-                                () => alert('Fitur ini belum tersedia')
+                                () => toast.info('😱😱😱 Oh tidaak!! hak akses anda dibatasi!!!')
                                 // () => navigate('/forgot-password')
                             }>
                             Forgot password?
@@ -149,7 +150,7 @@ export const UserLoginPage = () => {
                         </button>
                     </p>
                 </form>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 };

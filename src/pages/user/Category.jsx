@@ -67,7 +67,6 @@ const Categories = () => {
     'bg-cyan-100',
   ];
 
-  // Function to capitalize the first letter of a string
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -89,7 +88,6 @@ const Categories = () => {
 
   useEffect(() => {
     if (categories.length > 0) {
-      // Gabungkan semua buku dari semua kategori
       const all = categories.flatMap(cat => cat.Books || []);
       setSelectedAllBooks(all);
     }

@@ -6,7 +6,6 @@ export const useAuthStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    // ✅ LOGIN
     login: async (credentials) => {
         set({ loading: true });
         try {
@@ -30,7 +29,6 @@ export const useAuthStore = create((set, get) => ({
         }
     },
 
-    // ✅ REGISTER
     register: async (userData) => {
         set({ loading: true });
         try {
@@ -45,7 +43,6 @@ export const useAuthStore = create((set, get) => ({
         }
     },
 
-    // ✅ GET CURRENT USER (Optional dipanggil saat mount untuk verifikasi token)
     getCurrentUser: async () => {
         const token = localStorage.getItem('token');
         if (!token) return null;
@@ -69,40 +66,6 @@ export const useAuthStore = create((set, get) => ({
         }
     },
 
-    // ✅ UPDATE PROFILE
-    updateProfile: async (userData) => {
-        set({ loading: true });
-        try {
-            const data = await authService.updateProfile(userData);
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                set({ user: data.user, error: null });
-            }
-            return data;
-        } catch (err) {
-            set({ error: err.message || 'Update profile gagal' });
-            throw err;
-        } finally {
-            set({ loading: false });
-        }
-    },
-
-    // ✅ CHANGE PASSWORD
-    changePassword: async (passwordData) => {
-        set({ loading: true });
-        try {
-            const data = await authService.changePassword(passwordData);
-            set({ error: null });
-            return data;
-        } catch (err) {
-            set({ error: err.message || 'Gagal mengganti password' });
-            throw err;
-        } finally {
-            set({ loading: false });
-        }
-    },
-
-    // ✅ LOGOUT
     logout: async () => {
         try {
             await authService.logout();
@@ -113,9 +76,38 @@ export const useAuthStore = create((set, get) => ({
         set({ user: null, error: null });
     },
 
-    // ✅ AUTH CHECK
+    // updateProfile: async (userData) => {
+    //     set({ loading: true });
+    //     try {
+    //         const data = await authService.updateProfile(userData);
+    //         if (data.user) {
+    //             localStorage.setItem('user', JSON.stringify(data.user));
+    //             set({ user: data.user, error: null });
+    //         }
+    //         return data;
+    //     } catch (err) {
+    //         set({ error: err.message || 'Update profile gagal' });
+    //         throw err;
+    //     } finally {
+    //         set({ loading: false });
+    //     }
+    // },
+
+    // changePassword: async (passwordData) => {
+    //     set({ loading: true });
+    //     try {
+    //         const data = await authService.changePassword(passwordData);
+    //         set({ error: null });
+    //         return data;
+    //     } catch (err) {
+    //         set({ error: err.message || 'Gagal mengganti password' });
+    //         throw err;
+    //     } finally {
+    //         set({ loading: false });
+    //     }
+    // },
+
     isAuthenticated: () => !!get().user,
 
-    // ✅ CLEAR ERROR
     clearError: () => set({ error: null }),
 }));

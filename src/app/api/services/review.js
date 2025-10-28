@@ -9,6 +9,12 @@ export const reviewService = {
         return data;
     },
 
+    updateReview: async (bookId, payload) => {
+        const data = await api.put(`${config.api_host}/api/v2/reviews/${bookId}`, payload);
+        // console.log("Updated Review Response:", bookId, payload);
+        return data;
+    },
+
     getReviewsByBook: async (id) => {
         const data = await api.get(`${config.api_host}/api/v2/reviews/book/${id}`);
         return data;

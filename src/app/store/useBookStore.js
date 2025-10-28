@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { bookService } from '../api/services/book';
 
-// Status constants
 const STATUS = {
     IDLE: 'idle',
     PROCESS: 'process',
@@ -10,7 +9,6 @@ const STATUS = {
 };
 
 const useBookStore = create((set) => ({
-    // States
     allBooks: { count: 0, data: [] },
     favoriteBooks: { count: 0, data: [], nextCursor: null },
     newArrival: { count: 0, data: [], nextCursor: null },
@@ -43,12 +41,10 @@ const useBookStore = create((set) => ({
 
     clearError: () => set({ error: null }),
 
-    // Fetch All Books
     getAllBooks: async (params = {}) => {
         const { setLoading, setError } = useBookStore.getState();
         // const limit = parseInt(params.limit, 10) || 10;
         // const lastId = params.lastId ? parseInt(params.lastId, 10) : null;
-
         // console.log('📚 Fetching all books → limit:', limit, 'lastId:', lastId);
 
         try {
@@ -73,7 +69,7 @@ const useBookStore = create((set) => ({
                             ...state.allBooks.data,
                             ...data.rows.filter(
                                 (b) => !state.allBooks.data.some((x) => x.id === b.id)
-                            ), // Hindari duplikat
+                            ),
                         ],
                     },
                     error: null,
@@ -81,7 +77,7 @@ const useBookStore = create((set) => ({
             });
 
             setLoading('allBooks', STATUS.SUCCESS);
-            return data; // penting agar frontend bisa ambil nextCursor
+            return data;
         } catch (error) {
             setError(error.message);
             setLoading('allBooks', STATUS.ERROR);
@@ -99,18 +95,14 @@ const useBookStore = create((set) => ({
         try {
             setLoading('favoriteBooks', STATUS.PROCESS);
             const data = await bookService.getFavoriteBooks(params);
-
             // console.log('Fetched favorite books data:', data);
-
             set((state) => {
                 if (!params.lastId) {
-                    // Fetch pertama → ganti data lama
                     return {
                         favoriteBooks: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
                         error: null,
                     };
                 }
-                // Fetch berikutnya → gabung data baru tanpa duplikat
                 return {
                     favoriteBooks: {
                         count: data.count,
@@ -146,13 +138,11 @@ const useBookStore = create((set) => ({
 
             set((state) => {
                 if (!params.lastId) {
-                    // Fetch pertama → ganti data lama
                     return {
                         newArrival: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
                         error: null,
                     };
                 }
-                // Fetch berikutnya → gabung data baru tanpa duplikat
                 return {
                     newArrival: {
                         count: data.count,
@@ -188,13 +178,11 @@ const useBookStore = create((set) => ({
 
             set((state) => {
                 if (!params.lastId) {
-                    // Fetch pertama (replace)
                     return {
                         newRelease: { count: data.count, data: data.rows, nextCursor: data.nextCursor },
                         error: null,
                     };
                 }
-                // Fetch berikutnya (append)
                 return {
                     newRelease: {
                         count: data.count,

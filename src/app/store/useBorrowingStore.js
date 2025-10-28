@@ -28,7 +28,6 @@ const useBorrowingStore = create((set) => ({
             set((state) => ({ loading: true, error: null }));
             // await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await borrowingService.getBorrowings();
-            // pastikan response selalu array
             set({ borrowedBooks: Array.isArray(response) ? response : [response] });
 
             set((state) => ({ loading: false }));
@@ -43,7 +42,6 @@ const useBorrowingStore = create((set) => ({
 
             const response = await borrowingService.getHistoryBorrowings();
             console.log(response);
-            // pastikan response selalu array
             set({ returnedBooks: Array.isArray(response) ? response : [response] });
 
             set((state) => ({ loading: false }));
@@ -61,12 +59,10 @@ const useBorrowingStore = create((set) => ({
             // await new Promise(resolve => setTimeout(resolve, 2000));
             const response = await borrowingService.returnBorrowing(id);
 
-            // Hapus buku yang dikembalikan dari borrowedBooks
             set((state) => ({
                 borrowedBooks: state.borrowedBooks.filter((b) => b.id !== id),
             }));
 
-            // (Opsional) refetch data untuk jaga konsistensi
             await useBorrowingStore.getState().getBorrowings();
 
             set((state) => ({

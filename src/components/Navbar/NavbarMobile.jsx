@@ -1,35 +1,53 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { HiOutlineBars3 } from "react-icons/hi2";
 import { FaSearch } from "react-icons/fa";
-import { FaXmark } from "react-icons/fa6";
-import ProfileButton from "../../pages/Profile";
+import ProfileButton from "../Profile/index";
 import { menus } from "./menuConfig";
 import Logo from "../../assets/images/Letter C Logo With Education and Book Concept._20250408_193234_0000.png";
 import { useEffect, useRef, useState } from "react";
 import useClickOutside from "../../hooks/useClickOutside";
 import NotificationDropdown from "./NotificationDropdown";
 import SearchInput from "./SearchInput";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+
+const itemVariant = {
+    hidden: { opacity: 0, y: -10 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { type: "spring", stiffness: 200, damping: 18 },
+    },
+    exit: { opacity: 0, y: -10, transition: { duration: 0.15 } },
+};
+
+const containerVariant = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+        opacity: 1,
+        height: "auto",
+        transition: {
+            when: "beforeChildren",
+            staggerChildren: 0.1, // muncul satu-satu
+            type: "tween",
+            duration: 0.2,
+        },
+    },
+    exit: {
+        opacity: 0,
+        height: 0,
+        transition: { when: "afterChildren", duration: 0.2 },
+    },
+};
 
 const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
     const navigate = useNavigate();
     const location = useLocation();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
 
     const inputRef = useRef(null);
-
     const menuRef = useRef(null);
-
     const toggleButtonRef = useRef(null);
-
-
-    const lineProps = {
-        transition: { duration: 0.4, ease: "easeInOut" },
-        stroke: "white",
-        strokeWidth: 3.5, // sedikit lebih tebal biar jelas di ukuran besar
-        strokeLinecap: "round",
-    };
 
     // ====== Fokus otomatis ke input search ======
     useEffect(() => {
@@ -48,19 +66,19 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
         setIsMenuOpen(false);
     });
 
+    const lineProps = {
+        transition: { duration: 0.4, ease: "easeInOut" },
+        stroke: "white",
+        strokeWidth: 3.5, // sedikit lebih tebal biar jelas di ukuran besar
+        strokeLinecap: "round",
+    };
+
     return (
         <div className="w-full  sm:hidden">
-            {console.log(isMenuOpen)}
+            {/* {console.log(isMenuOpen)} */}
             <div className="flex w-full items-center justify-between">
                 {/* Left: menu + search */}
-                <div className="flex items-center gap-2" ref={menuRef}>
-                    {/* <button onClick={toggleMenu} className="text-white !p-1">
-                        {isMenuOpen ? (
-                            <FaXmark className="w-6 h-6" />
-                        ) : (
-                            <HiOutlineBars3 className="w-6 h-6" />
-                        )}
-                    </button> */}
+                <div className="flex items-center gap-2">
                     <button
                         ref={toggleButtonRef}
                         onClick={toggleMenu}
@@ -169,28 +187,38 @@ const NavbarMobile = ({ isAuthenticated, isScrolled }) => {
             {/* ===== Mobile Menu Dropdown ===== */}
 
             {isMenuOpen && (
-                <ul
-                    ref={menuRef}
-                    className="flex flex-col sm:hidden bg-[#462d07] text-white border-t border-gray-600">
-                    {menus.map((menu, index) => (
-                        <li key={index}>
-                            <button
-                                className={`block w-full text-left px-4 py-2 hover:text-[#fbe488] ${location.pathname === menu.path ? "text-[#fbe488]" : ""
-                                    }`}
-                                onClick={() => {
-                                    if (menu.path === "/my-library" && !isAuthenticated) {
-                                        navigate("/login");
-                                    } else {
-                                        navigate(menu.path);
-                                    }
-                                    setIsMenuOpen(false);
-                                }}
-                            >
-                                {menu.name}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.ul
+                            ref={menuRef}
+                            key="mobile-menu"
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={containerVariant}
+                            className="flex flex-col sm:hidden bg-[#462d07] text-white border-t border-gray-600 overflow-hidden"
+                        >
+                            {menus.map((menu, index) => (
+                                <motion.li key={index} variants={itemVariant}>
+                                    <motion.button
+                                        className={`block w-full text-left px-4 py-3 hover:text-[#fbe488] text-lg transition-colors ${location.pathname === menu.path ? "text-[#fbe488]" : ""
+                                            }`}
+                                        onClick={() => {
+                                            if (menu.path === "/my-library" && !isAuthenticated) {
+                                                navigate("/login");
+                                            } else {
+                                                navigate(menu.path);
+                                            }
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        {menu.name}
+                                    </motion.button>
+                                </motion.li>
+                            ))}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
             )}
         </div>
     );

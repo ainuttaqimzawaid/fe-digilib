@@ -43,15 +43,12 @@ const BookSection = ({
                 break;
         }
 
-        // Lanjutkan fetch berikutnya pakai cursor
         const res = await getData({
             limit,
             lastId: data.nextCursor.lastId,
             ...cursorParams, // gabungkan cursor spesifik
         });
-        console.log(cursorParams);
-
-        // Simpan cursor baru (opsional, tergantung store kamu)
+        // console.log(cursorParams);
         // setCursor(res.nextCursor);
     };
 

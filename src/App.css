@@ -3,3 +3,6 @@
 @theme {
   --font-roboto: "Roboto", sans-serif;
 }
+.btn-primary {
+  @apply text-white px-6 py-2 rounded-full transition-colors duration-200;
+}

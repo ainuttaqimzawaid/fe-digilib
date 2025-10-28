@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-// import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { Route, Routes } from 'react-router-dom';
 import Categories from './Category';
@@ -10,6 +9,10 @@ import SearchPage from './SearchPage';
 import BookDetail from './BookDetail';
 import Home from './Home';
 import Navbar from '../../components/Navbar/Navbar';
+import AboutUs from './AboutUs';
+import TermsandCondition from './TermsCondition';
+import MyClub from './MyClub';
+import FAQ from './FAQ';
 
 const MainNavigate = () => {
     useEffect(() => {
@@ -28,6 +31,10 @@ const MainNavigate = () => {
                 <Route path="/notification-detail" element={<Notifications />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/book/:id" element={<BookDetail />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/book-club" element={<MyClub />} />
+                <Route path="/terms-and-condition" element={<TermsandCondition />} />
+                <Route path="/faq" element={<FAQ />} />
             </Routes>
             <Footer />
         </div>

@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
 import Hero from '../../components/Hero';
-// import PopularBooks from '../../components/PopularBook';
-// import NewRelease from '../../components/NewRelease';
-// import NewArrivalBooks from '../../components/NewArrivalBook';
 import BookSection from '../../components/BookSection';
 import useBookStore from '../../app/store/useBookStore';
 
@@ -15,18 +12,7 @@ const Home = () => {
     const error = useBookStore((state) => state.error);
     const getNewArrival = useBookStore((state) => state.getNewArrival);
     const getNewRelease = useBookStore((state) => state.getNewRelease);
-    // const {
-    //     favoriteBooks,
-    //     newArrival,
-    //     newRelease,
-    //     loading,
-    //     error,
-    //     getFavoriteBooks,
-    //     getNewArrival,
-    //     getNewRelease,
-    // } = useBookStore();
     useEffect(() => {
-        // Scroll to top when component mounts
         window.scrollTo(0, 0);
     }, []);
 

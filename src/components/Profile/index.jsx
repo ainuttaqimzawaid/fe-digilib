@@ -78,18 +78,15 @@ const ProfileButton = () => {
             animate={isOpen ? "open" : "closed"}
         >
             {/* {console.log(isOpen)} */}
-            {/* Overlay abu-abu */}
             {isOpen && (
                 <motion.div className="absolute top-0 right-0 h-screen w-screen bg-gray-300/30" />
             )}
 
-            {/* Sidebar putih */}
             <motion.div
                 variants={sidebar}
                 className="absolute top-0 right-0 h-screen w-48 md:w-72 bg-white"
             />
 
-            {/* Panel pengguna */}
             <UserPanel
                 user={user}
                 onClose={() => toggleOpen()}
@@ -97,7 +94,6 @@ const ProfileButton = () => {
                 panelRef={panelRef}
             />
 
-            {/* Tombol toggle (muncul hanya saat tertutup) */}
             {isOpen ? '' : (
                 <AnimatePresence initial={false}>
                     <button

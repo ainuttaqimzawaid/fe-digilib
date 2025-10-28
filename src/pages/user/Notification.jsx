@@ -14,7 +14,6 @@ const Notifications = () => {
                 </div>)
                 :
                 (<div className="w-screen h-screen flex items-center justify-center">
-                    {/* Notification items would go here */}
                     <p className="text-4xl text-gray-600">No new notifications</p>
                 </div>)
             }

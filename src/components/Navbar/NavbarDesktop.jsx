@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ProfileButton from "../../pages/Profile";
+import ProfileButton from "../Profile/index";
 import { menus } from "./menuConfig";
 import SearchInput from "./SearchInput";
 import NotificationDropdown from "./NotificationDropdown";

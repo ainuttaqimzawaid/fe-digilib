@@ -1,8 +1,6 @@
 import { config } from "../../../config";
 import api from '../axios/index';
 
-
-
 export const borrowingService = {
     createBorrowing: async (payload) => {
         const data = await api.post(`${config.api_host}/api/v2/borrowbook`, payload);

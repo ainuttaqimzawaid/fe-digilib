@@ -29,6 +29,30 @@ const useReviewStore = create((set) => ({
         }
     },
 
+    updateReview: async (bookId, payload) => {
+        try {
+            set({ loading: true, error: null });
+            const response = await reviewService.updateReview(bookId, payload);
+            // console.log("Updated Review Response:", bookId, payload);
+
+            set((state) => {
+                const bookId = response.bookId;
+                return {
+                    bookReviews: {
+                        ...state.bookReviews,
+                        [bookId]: [...(state.bookReviews[bookId] || []), response],
+                    },
+                    userReviews: [...state.userReviews, response],
+                };
+            });
+
+            set({ loading: false });
+            return response;
+        } catch (err) {
+            set({ error: err.response?.data?.message || err.message, loading: false });
+        }
+    },
+
     getReviewsByBook: async (id) => {
         try {
             set({ loading: true, error: null });

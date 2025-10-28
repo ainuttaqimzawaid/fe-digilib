@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { config } from "../config";
+// import { config } from "../config";
 import useBorrowingStore from "../app/store/useBorrowingStore";
 import useQueueStore from "../app/store/useQueueStore";
 import useReviewStore from "../app/store/useReviewStore";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 const BookInfo = ({ book }) => {
     const [showReviewModal, setShowReviewModal] = useState(false);
+    const [editingReview, setEditingReview] = useState(null);
 
     const {
         createBorrowing,
@@ -16,9 +17,8 @@ const BookInfo = ({ book }) => {
         borrowedBooks,
         error: borrowingError,
     } = useBorrowingStore();
-
     const { fetchMyQueue, addQueue, myQueue, error: queueError } = useQueueStore();
-    const { createReview, bookReviews } = useReviewStore();
+    const { createReview, updateReview, bookReviews, userReviews } = useReviewStore();
 
     useEffect(() => {
         getBorrowings();
@@ -30,11 +30,12 @@ const BookInfo = ({ book }) => {
 
     const requireLogin = () => {
         if (!userId) {
-            alert("Silakan login dulu");
+            toast.warn("Silakan login dulu untuk melanjutkan.");
             return false;
         }
         return true;
     };
+
 
     const handleBorrowBook = () => {
         if (!requireLogin()) return;
@@ -47,7 +48,12 @@ const BookInfo = ({ book }) => {
     };
 
     const handleSubmitReview = ({ bookId, rating, comment }) => {
-        createReview({ bookId, rating, comment });
+        if (editingReview) {
+            updateReview(bookId, { rating, comment });
+        } else {
+            createReview({ bookId, rating, comment });
+        }
+        setEditingReview(null);
     };
 
     const handleOpenBook = (book) => {
@@ -91,8 +97,17 @@ const BookInfo = ({ book }) => {
     );
     const isQueued = myQueue?.some((q) => q.bookId === book.id);
 
+    const existingReview = userReviews?.find(
+        (r) => r.bookId === book.id && r.userId === userId
+    );
+
+    const averageRating = bookReviews.length
+        ? bookReviews.reduce((acc, r) => acc + r.rating, 0) / bookReviews.length
+        : 0;
+
     return (
         <div className="flex gap-6">
+            {console.log(book)}
             <img
                 // image from assets folder
                 // src={`${config.api_host}/public/images/books/${book.image_url}`}
@@ -106,27 +121,68 @@ const BookInfo = ({ book }) => {
             <div>
                 <h2 className="text-2xl font-bold">{book.title}</h2>
                 <p className="text-gray-600">{book.author}</p>
-                <StarRating
+                {/* <StarRating
                     value={bookReviews[0] ? bookReviews[0].rating : 0}
                     readOnly={true}
-                />
+                /> */}
+                <StarRating value={averageRating} readOnly />
 
-                <div className="mt-6 flex gap-4">
+                <div className="mt-2 sm:mt-6 flex gap-4">
                     {isBorrowed ? (
-                        <>
+                        <div className="sm:flex flex-col sm:flex-row md:gap-4">
+                            <button onClick={() => handleOpenBook(book)} className="btn-primary bg-green-600 hover:bg-green-700 mb-1 sm:mb-0">
+                                Baca
+                            </button>
                             <button
-                                className="bg-green-600 text-white !px-6 !py-2 !rounded-full hover:bg-green-700"
+                                onClick={() => {
+                                    setEditingReview(existingReview || null);
+                                    setShowReviewModal(true);
+                                }}
+                                className={`btn-primary ${existingReview
+                                    ? "bg-yellow-600 hover:bg-yellow-700"
+                                    : "bg-gray-500 hover:bg-gray-600"
+                                    }`}
+                            >
+                                {existingReview ? "Ubah Ulasan" : "Ulasan"}
+                            </button>
+                        </div>
+                    ) : book.availableCopies > 0 ? (
+                        <button onClick={handleBorrowBook} className="btn-primary bg-blue-600 hover:bg-blue-700">
+                            Pinjam
+                        </button>
+                    ) : isQueued ? (
+                        <button disabled className="btn-primary bg-gray-400">
+                            Sudah Antri
+                        </button>
+                    ) : (
+                        <button onClick={handleQueueBook} className="btn-primary bg-yellow-500 hover:bg-yellow-600">
+                            Antri
+                        </button>
+                    )}
+                </div>
+
+                {/* <div className="mt-2 sm:mt-6 flex gap-4">
+                    {isBorrowed ? (
+                        <div className="sm:flex flex-col sm:flex-row md:gap-4">
+                            <button
+                                className="bg-green-600 text-white !px-6 !py-2 !rounded-full hover:bg-green-700 w-[90px] mb-1 sm:mb-0"
                                 onClick={() => handleOpenBook(book)}
                             >
                                 Baca
                             </button>
                             <button
-                                onClick={() => setShowReviewModal(true)}
-                                className="bg-gray-500 text-white !px-6 !py-2 !rounded-full hover:bg-gray-600"
+                                onClick={() => {
+                                    setEditingReview(existingReview || null);
+                                    setShowReviewModal(true);
+                                }}
+                                className={`text-white !px-6 !py-2 !rounded-full ${existingReview
+                                    ? "bg-yellow-600 hover:bg-yellow-700"
+                                    : "bg-gray-500 hover:bg-gray-600"
+                                    }`}
                             >
-                                Ulasan
+                                {existingReview ? "Ubah Ulasan" : "Ulasan"}
                             </button>
-                        </>
+                        </div>
                     ) : book.availableCopies > 0 ? (
                         <button
                             onClick={handleBorrowBook}
@@ -135,7 +191,9 @@ const BookInfo = ({ book }) => {
                             Pinjam
                         </button>
                     ) : isQueued ? (
-                        <button className="bg-gray-400 text-white !px-6 !py-2 !rounded-full cursor-not-allowed">
+                        <button
+                            disabled
+                            className="bg-gray-400 text-white !px-6 !py-2 !rounded-full">
                             Sudah Antri
                         </button>
                     ) : (
@@ -146,13 +204,17 @@ const BookInfo = ({ book }) => {
                             Antri
                         </button>
                     )}
-                </div>
+                </div> */}
 
                 {showReviewModal && (
                     <ReviewModal
                         book={book}
-                        onClose={() => setShowReviewModal(false)}
+                        onClose={() => {
+                            setShowReviewModal(false);
+                            setEditingReview(null);
+                        }}
                         onSubmit={handleSubmitReview}
+                        existingReview={editingReview}
                     />
                 )}
 

@@ -1,5 +1,5 @@
 import api from '../axios/index';
-import { config } from "../../../config";
+// import { config } from "../../../config";
 
 export const queueService = {
     // User daftar antrean

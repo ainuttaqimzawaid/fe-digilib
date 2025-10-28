@@ -3,7 +3,6 @@ import useBorrowingStore from "../../app/store/useBorrowingStore";
 import CardBook from "../../components/CardProduct";
 import useQueueStore from "../../app/store/useQueueStore";
 import useReviewStore from "../../app/store/useReviewStore";
-import Loading from "../../components/Loading";
 import CardProductPlaceholder from "../../components/CardProductPlaceholder";
 
 
@@ -35,7 +34,6 @@ const MyLibrary = () => {
         error: queueError,
     } = useQueueStore();
 
-    // fetch default saat mount → "Borrowed"
     useEffect(() => {
         handleFetch("Borrowed");
     }, [returnBorrowing]);
@@ -81,7 +79,6 @@ const MyLibrary = () => {
                 ))}
             </div>
 
-            {/* Tab Content */}
             <div className="bg-white rounded-xl shadow-md p-4 min-h-[200px]">
                 {activeTab === 'Borrowed' && (
                     <div className="w-full">

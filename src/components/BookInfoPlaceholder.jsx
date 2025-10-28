@@ -14,13 +14,13 @@ const BookInfoPlaceholder = ({ book }) => {
                     readOnly={true}
                 />
 
-                <div className="mt-6 flex gap-4">
+                <div className="mt-2 sm:mt-6 flex flex-col sm:flex-row sm:gap-4">
                     <div
-                        className="bg-gray-300 text-white w-24 h-8 !rounded-full"
+                        className="bg-gray-300 text-white w-24 h-8 !rounded-full mb-2"
                     >
                     </div>
                     <div
-                        className="bg-gray-300 text-white w-16 h-8 !rounded-full"
+                        className="bg-gray-300 text-white w-24 h-8 !rounded-full"
                     >
                     </div>
                 </div>

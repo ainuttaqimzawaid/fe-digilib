@@ -31,7 +31,8 @@ const ReviewModal = ({ book, onClose, onSubmit }) => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex gap-4 border border-gray-200 p-4 rounded">
                         <img
-                            src={`${config.api_host}/public/images/books/${book.image_url}`}
+                            // src={`${config.api_host}/public/images/books/${book.image_url}`}
+                            src={book.image_url}
                             alt={book.title}
                             className="w-32 object-cover rounded"
                         />

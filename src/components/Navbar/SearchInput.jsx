@@ -16,7 +16,7 @@ const SearchInput = ({ isScrolled, inputRef }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            {console.log(isScrolled)}
+            {/* {console.log(isScrolled)} */}
             <input
                 ref={inputRef}
                 type="text"

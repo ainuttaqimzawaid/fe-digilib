@@ -16,7 +16,6 @@ function App() {
           <Route path="/*" element={<MainNavigate />} />
           <Route path="/login" element={<UserLoginPage />} />
           <Route path="/register" element={<Register />} />
-          {/* <Route path="/detail/:id" element={<Detail />} /> */}
         </Routes>
         <ToastContainer
           position="bottom-center"

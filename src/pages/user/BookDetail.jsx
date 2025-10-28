@@ -1,4 +1,3 @@
-// pages/BookDetail.jsx
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useBookStore from '../../app/store/useBookStore';
@@ -7,13 +6,15 @@ import StarRating from '../../components/RatingBook';
 import BookInfo from '../../components/BookInfo';
 import Loading from '../../components/Loading';
 import BookInfoPlaceholder from '../../components/BookInfoPlaceholder';
+import { useAuthStore } from '../../app/store/useAuthStore';
 
 
 const BookDetail = () => {
     const detailBook = ['deskripsi', 'detail', 'ulasan'];
+    const userId = useAuthStore((state) => state.user?.id);
     const { id } = useParams();
     const { getBookById, currentBook, loading, error } = useBookStore();
-    const { getReviewsByBook, bookReviews, loading: reviewLoading } = useReviewStore();
+    const { getReviewsByBook, getReviewsByUser, bookReviews, loading: reviewLoading } = useReviewStore();
     const [activeTab, setActiveTab] = useState(detailBook[0]);
     const [underlineStyle, setUnderlineStyle] = useState({});
 
@@ -21,6 +22,7 @@ const BookDetail = () => {
         if (id) {
             getBookById(id);
             getReviewsByBook(id);
+            getReviewsByUser(userId);
         }
     }, [id]);
 
@@ -38,7 +40,7 @@ const BookDetail = () => {
 
     return (
         <div className="container mx-auto py-32 px-6 min-h-screen">
-            {/* {console.log(loading.currentBook)} */}
+            {/* {console.log(userId)} */}
             <div className='bg-white rounded-xl shadow-md p-6'>
                 <h2 className='text-3xl mb-4'>Detail Buku</h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -94,7 +96,7 @@ const BookDetail = () => {
                                 </table>
                             </div>
                         )}
-                        {console.log(bookReviews)}
+                        {/* {console.log(bookReviews)} */}
                         {activeTab === "ulasan" && (
                             <div className="flex flex-col gap-4">
                                 {reviewLoading ? (
