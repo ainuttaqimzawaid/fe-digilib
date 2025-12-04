@@ -161,51 +161,6 @@ const BookInfo = ({ book }) => {
                     )}
                 </div>
 
-                {/* <div className="mt-2 sm:mt-6 flex gap-4">
-                    {isBorrowed ? (
-                        <div className="sm:flex flex-col sm:flex-row md:gap-4">
-                            <button
-                                className="bg-green-600 text-white !px-6 !py-2 !rounded-full hover:bg-green-700 w-[90px] mb-1 sm:mb-0"
-                                onClick={() => handleOpenBook(book)}
-                            >
-                                Baca
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setEditingReview(existingReview || null);
-                                    setShowReviewModal(true);
-                                }}
-                                className={`text-white !px-6 !py-2 !rounded-full ${existingReview
-                                    ? "bg-yellow-600 hover:bg-yellow-700"
-                                    : "bg-gray-500 hover:bg-gray-600"
-                                    }`}
-                            >
-                                {existingReview ? "Ubah Ulasan" : "Ulasan"}
-                            </button>
-                        </div>
-                    ) : book.availableCopies > 0 ? (
-                        <button
-                            onClick={handleBorrowBook}
-                            className="bg-blue-600 text-white !px-6 !py-2 !rounded-full hover:bg-blue-700"
-                        >
-                            Pinjam
-                        </button>
-                    ) : isQueued ? (
-                        <button
-                            disabled
-                            className="bg-gray-400 text-white !px-6 !py-2 !rounded-full">
-                            Sudah Antri
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleQueueBook}
-                            className="bg-yellow-500 text-white !px-6 !py-2 !rounded-full hover:bg-yellow-600"
-                        >
-                            Antri
-                        </button>
-                    )}
-                </div> */}
-
                 {showReviewModal && (
                     <ReviewModal
                         book={book}
