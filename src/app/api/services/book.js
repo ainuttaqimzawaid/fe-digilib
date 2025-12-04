@@ -1,7 +1,6 @@
 import axios from "axios";
 import { config } from "../../../config";
 import api from '../axios/index';
-import { postFormData, putFormData } from '../helpers/formRequest';
 
 
 
